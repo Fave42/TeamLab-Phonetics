@@ -1,0 +1,29 @@
+\begin{thebibliography}{4}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Crockford(2002)}]{JSON}
+Douglas Crockford. 2002.
+\newblock \href {https://json.org/} {Json: Javascript object notation}.
+
+\bibitem[{Levenshtein(1966)}]{Levenshtein}
+Vladimir Levenshtein. 1966.
+\newblock {Binary Codes Capable of Correcting Deletions, Insertions and
+  Reversals}.
+\newblock \emph{Soviet Physics Doklady}, 10:707.
+
+\bibitem[{Needham(1990)}]{IMDb}
+Col Needham. 1990.
+\newblock \href {https://www.imdb.com/} {Internet movie database}.
+
+\bibitem[{Ultes et~al.(2017)Ultes, Rojas-Barahona, Su, Vandyke, Kim, Casanueva,
+  Budzianowski, Mrk{\v s}i{\'{c}}, Wen, Ga{\v s}i{\'{c}}, and
+  Young}]{Pydial_2017}
+Stefan Ultes, Lina Rojas-Barahona, Pei-Hao Su, David Vandyke, Dongho Kim,
+  I{\~{n}}igo Casanueva, Pawe{\l} Budzianowski, Nikola Mrk{\v s}i{\'{c}},
+  Tsung-Hsien Wen, Milica Ga{\v s}i{\'{c}}, and Steve Young. 2017.
+\newblock \href {http://aclweb.org/anthology/P17-4013} {Pydial: A multi-domain
+  statistical dialogue system toolkit}.
+\newblock In \emph{Proceedings of ACL 2017, System Demonstrations}, pages
+  73--78, Vancouver, Canada. Association for Computational Linguistics.
+
+\end{thebibliography}

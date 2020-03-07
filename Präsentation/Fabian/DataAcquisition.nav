@@ -1,0 +1,72 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@framepages {2}{2}}
+\headcommand {\beamer@sectionpages {1}{2}}
+\headcommand {\beamer@subsectionpages {1}{2}}
+\headcommand {\sectionentry {1}{New Domain}{3}{New Domain}{0}}
+\headcommand {\slideentry {1}{0}{1}{3/3}{}{0}}
+\headcommand {\beamer@framepages {3}{3}}
+\headcommand {\slideentry {1}{0}{2}{4/7}{}{0}}
+\headcommand {\beamer@framepages {4}{7}}
+\headcommand {\beamer@sectionpages {3}{7}}
+\headcommand {\beamer@subsectionpages {3}{7}}
+\headcommand {\sectionentry {2}{Data Acquisition}{8}{Data Acquisition}{0}}
+\headcommand {\slideentry {2}{0}{1}{8/8}{}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@subsectionpages {8}{8}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{9}{IMDB Database}}
+\headcommand {\slideentry {2}{1}{1}{9/13}{IMDB Database}{0}}
+\headcommand {\beamer@framepages {9}{13}}
+\headcommand {\slideentry {2}{1}{2}{14/14}{IMDB Database}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\slideentry {2}{1}{3}{15/15}{IMDB Database}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\beamer@subsectionpages {9}{15}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{16}{Data Preprocessing}}
+\headcommand {\slideentry {2}{2}{1}{16/21}{Data Preprocessing}{0}}
+\headcommand {\beamer@framepages {16}{21}}
+\headcommand {\slideentry {2}{2}{2}{22/25}{Data Preprocessing}{0}}
+\headcommand {\beamer@framepages {22}{25}}
+\headcommand {\slideentry {2}{2}{3}{26/35}{Data Preprocessing}{0}}
+\headcommand {\beamer@framepages {26}{35}}
+\headcommand {\beamer@sectionpages {8}{35}}
+\headcommand {\beamer@subsectionpages {16}{35}}
+\headcommand {\sectionentry {3}{Adding the Domain to PyDial}{36}{Adding the Domain to PyDial}{0}}
+\headcommand {\slideentry {3}{0}{1}{36/36}{}{0}}
+\headcommand {\beamer@framepages {36}{36}}
+\headcommand {\beamer@subsectionpages {36}{36}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{37}{Recap: Slot types}}
+\headcommand {\slideentry {3}{1}{1}{37/38}{Recap: Slot types}{0}}
+\headcommand {\beamer@framepages {37}{38}}
+\headcommand {\slideentry {3}{1}{2}{39/40}{Recap: Slot types}{0}}
+\headcommand {\beamer@framepages {39}{40}}
+\headcommand {\slideentry {3}{1}{3}{41/41}{Recap: Slot types}{0}}
+\headcommand {\beamer@framepages {41}{41}}
+\headcommand {\slideentry {3}{1}{4}{42/43}{Recap: Slot types}{0}}
+\headcommand {\beamer@framepages {42}{43}}
+\headcommand {\beamer@sectionpages {36}{43}}
+\headcommand {\beamer@subsectionpages {37}{43}}
+\headcommand {\sectionentry {4}{Limitations}{44}{Limitations}{0}}
+\headcommand {\slideentry {4}{0}{1}{44/44}{}{0}}
+\headcommand {\beamer@framepages {44}{44}}
+\headcommand {\slideentry {4}{0}{2}{45/45}{}{0}}
+\headcommand {\beamer@framepages {45}{45}}
+\headcommand {\slideentry {4}{0}{3}{46/48}{}{0}}
+\headcommand {\beamer@framepages {46}{48}}
+\headcommand {\slideentry {4}{0}{4}{49/52}{}{0}}
+\headcommand {\beamer@framepages {49}{52}}
+\headcommand {\beamer@sectionpages {44}{52}}
+\headcommand {\beamer@subsectionpages {44}{52}}
+\headcommand {\sectionentry {5}{Takeaway}{53}{Takeaway}{0}}
+\headcommand {\slideentry {5}{0}{1}{53/53}{}{0}}
+\headcommand {\beamer@framepages {53}{53}}
+\headcommand {\slideentry {5}{0}{2}{54/56}{}{0}}
+\headcommand {\beamer@framepages {54}{56}}
+\headcommand {\slideentry {5}{0}{3}{57/57}{}{0}}
+\headcommand {\beamer@framepages {57}{57}}
+\headcommand {\beamer@partpages {1}{57}}
+\headcommand {\beamer@subsectionpages {53}{57}}
+\headcommand {\beamer@sectionpages {53}{57}}
+\headcommand {\beamer@documentpages {57}}
+\headcommand {\gdef \inserttotalframenumber {23}}

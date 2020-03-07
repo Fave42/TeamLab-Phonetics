@@ -1,0 +1,420 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[hyperref]{acl2018}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{supertabular}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{natbib}
+\usepackage{float}
+
+%\setlength\titlebox{5cm}
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+\aclfinalcopy
+\newcommand\BibTeX{B{\sc ib}\TeX}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+	backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+	basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+	breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+	breaklines=true,                 % sets automatic line breaking
+	captionpos=b,                    % sets the caption-position to bottom
+	commentstyle=\color{mygreen},    % comment style
+	deletekeywords={...},            % if you want to delete keywords from the given language
+	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+	extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+	frame=single,	                   % adds a frame around the code
+	keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+	keywordstyle=\color{blue},       % keyword style
+	language=Python,                 % the language of the code
+	morekeywords={*,...},            % if you want to add more keywords to the set
+	numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+	numbersep=5pt,                   % how far the line-numbers are from the code
+	numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+	rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+	showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+	showstringspaces=false,          % underline spaces within strings only
+	showtabs=false,                  % show tabs within strings adding particular underscores
+	stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+	stringstyle=\color{mymauve},     % string literal style
+	tabsize=4,	                   % sets default tabsize to 4 spaces
+	title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+\title{Report - TeamLab Phonetics}
+
+\author{Fabian Fey \\
+	Mtr.-Number: 2802772 \\
+	{\tt fabian.fey@ims} \\\And
+	Matthias Wilke \\
+	Mtr.-Number: 2865476 \\
+	{\tt matthias.wilke@ims} \\}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+During this semester, we explored the basic functionality of \textit{PyDial}, an open-source, multi-domain dialogue system toolkit written with Python. We encountered advantages and disadvantages of rule-based dialogue systems while integrating an entirely new domain (actors, producers, directors etc. from the renowned \textbf{I}nternet \textbf{M}ovie \textbf{D}ata\textbf{b}ase - the \emph{IMDb} \citep{IMDb}) into the system. Trying to add a large-scale database ($\sim$1.5m entries) to \textit{PyDial} revealed severe limitations of the system regarding file size and non-standardized input. We present the challenges we faced, as well as the most important conclusions for generally integrating new Domains into \textit{PyDial}. 
+\end{abstract}
+
+\section{Introduction}
+The goal was to work with \textit{PyDial} \cite{Pydial_2017} and improve or expand the System. \textit{PyDial} is an open-source \textit{Python Multi-domain Statistical Dialogue System Toolkit} developed by the \textit{Cambridge University}\footnote{\url{http://www.camdial.org/pydial/}} and can be used to create a dialogue system which is able to provide information and answer specific questions.
+
+For this project we decided to add a new domain to the \emph{PyDial} system and chose "movies" as the general theme of the new domain. The largest and most renowned resource for information about the movie industry is the \emph{IMDb}\footnote{\url{https://www.imdb.com/interfaces/}} which includes multiple interconnected datasets about celebrities, movies, tv shows, and even video games. In this report we first explain the required steps to preprocess the gathered data and what limitations are set by \emph{PyDial} in the choice of data and concerning its expandability.
+
+After the integration of our new domain, \emph{PyDial} will be able to answer question like "When was Leonardo DiCaprio born" or "What movies did Bruce Lee star in?".
+	
+\section{Data}
+Since the new domain was supposed to handle movie related information we chose the Internet Movie Database (\emph{IMDb}) for two reasons, first its datasets can be used for personal and non-commercial use without any restrictions and second it is the most comprehensive and complete database for movie titles and information about the persons connected to them.
+
+The \emph{IMDb} database contains seven different datasets that hold information about the titles, the episodes, the ratings, the persons and much more, these datasets are additionally interconnected with an unique alphanumeric identifiers for each entry which enables the combined use of all datasets.
+
+For this project we used two of the available datasets, the \emph{title.basics.tsv} which holds movie related data like the title and the runtime, and the \emph{name.basics.tsv} which holds the professions and on which movies the person has worked on.
+
+	\subsection{Title Dataset}
+
+	The first dataset is the \emph{title.basics.tsv} ($\sim$430MB) file which contains a list of movies and the respective information, if an information is not available the missing data is labelled with a "\textbackslash N". This file includes, in the order given in the file (See Table \ref{tab:title} for a short example) the following information:
+\begin{table}[H]
+		\begin{tabular}{ll}
+			\toprule[0.5mm]
+			tconst & tt1663202 \\[0.7mm]
+			titleType & movie \\[0.7mm]
+			primaryTitle & The Revenant \\[0.7mm]
+			originalTitle & The Revenant \\[0.7mm]
+			isAdult & 0 \\[0.7mm]
+			startYear & 2015 \\[0.7mm]
+			endYear & \textbackslash N \\[0.7mm]
+			runtimeMinutes & 156 \\[0.7mm]
+			genres & Adventure,Drama,History \\[0.7mm]
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Example entry for the movie "The Revenant" taken from the \emph{title.basics.tsv} file.}
+		\label{tab:title}
+	\end{table}	
+	\begin{itemize}
+		\item An unique alphanumeric identifier of the title to cross reference to the other datasets (\emph{tconst})
+		\item The type of the title, e.g. movie, short, tv series, video game, etc. (\emph{titleType})
+		\item The primary title (\emph{primaryTitle})
+		\item The original title (\emph{originalTitle})
+		\item Adult film status (\emph{isAdult})
+		\item The release year (\emph{startYear})
+		\item The end year, mostly for TV series (\emph{endYear})
+		\item The runtime of the title (\emph{runtimeMinutes})
+		\item Up to three genres of the title (\emph{genres})
+	\end{itemize}
+
+	
+	
+	\subsection{Name Dataset}
+	The second dataset is the \emph{names.basics.tsv} ($\sim$520mb) file which contains a list of persons and their respective information, if an information is not available the missing data is labelled with a "\textbackslash N". This file includes, in the order given in the file (See Table \ref{tab:names} for a short example) the following information:	
+	\begin{table}[H]
+	\centering
+		%		\small
+		\begin{tabular}{ll}
+			\toprule[0.5mm]
+			nconst & nm0000138 \\[0.7mm]
+			primaryName & Leonardo DiCaprio \\[0.7mm]
+			birthYear & 1974 \\[0.7mm]
+			deathYear & \textbackslash N \\[0.7mm]
+			primaryProfession & actor,producer,writer \\
+			knownForTitles & tt0993846,tt1375666,\\[0.7mm]
+			& tt0120338,tt0407887 \\[0.7mm]
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Example entry for the actor "Leonardo DiCaprio" taken from the \emph{names.basics.tsv} file.}
+		\label{tab:names}
+	\end{table}
+
+	\begin{itemize}
+		\item An unique alphanumeric identifier of the person to cross reference to the other datasets (\emph{nconst})
+		\item The name of the person (\emph{primaryName})
+		\item The birth year of the person (\emph{birthYear})
+		\item The death year of the person (\emph{deathYear})
+		\item The top three professions of the person (\emph{primaryProfession})
+		\item Four of the most known titles of the person, encoded with the tconst from the \emph{title.basics.tsv} file (\emph{knownForTitles})
+	\end{itemize}
+	
+	
+\section{Data Preprocessing}
+If a new domain is added to \emph{PyDial} it is necessary to create a sql database which holds all the needed information, this database will then be imported into \emph{PyDial}. In this Section we will explain the necessary steps to create the database for our domain and what steps are needed to import the database into \emph{PyDial}.
+
+Since not all the data provided by the \emph{IMDb} datasets were needed for the goal of our project we were able to discarded some of the information (see Section \ref{subsec:CreateDatabase}). Additionally, due to encoding limitations on part of \emph{PyDial}, all non-ASCII characters needed to be converted to ASCII characters.
+
+All of the data preprocessing was done with \emph{Python} version 3.6.
+
+
+	\subsection{Preprocessing the title file}
+	\label{sec:preTitle}
+	The \emph{title.basics.tsv} file is a tab separated file with 5,112,841 entries and nine columns per entry. The first step was to replace every "\textbackslash N" with "-1" which is easier to handle within the sql format. Since the collected data was to much for \emph{PyDial} (see Section \ref{sec:pydialLimits-DB}), we needed to excluded a lot of the data. Excluded were, all titles which were an adult film, if the title was published before the year 1980, if it had a total runtime of less than 10 minutes or no runtime at all, if it had no start year or if the tile had no genres appended. After this pre selection, all the information per entry that was kept for later processing were the \emph{tconst}, \emph{titleType}, \emph{primaryTitle}, \emph{startYear}, \emph{runtimeMinutes} and the \emph{genres} entries.
+	
+	All of the data was then stored, for later use, in a dictionary with the \emph{nconst} as the key.
+	
+	\subsection{Preprocessing the names file}
+	\label{sec:preNames}
+	The \emph{names.basics.tsv} file is a tab separated file with 8,659,623 entries and 6 columns per entry. The first step was to replace every "\textbackslash N" with "-1". Again, due to the limitations of \emph{PyDial} (see Section \ref{sec:pydialLimits-DB}), we needed to discard most of the data provided by the dataset. We chose to excluded all persons that matched the following constraints: The person had only one or no movie title, no birth year, or no professions appended. After this pre selection, all the information per entry that was kept for later processing were the \emph{nconst}, \emph{originalName}, \emph{birthYear}, \emph{deathYear}, \emph{primaryProfession} and the \emph{knownForTitles} entries. This data was then stored in a dictionary with the \emph{nconst} as key and the rest of the information as value, stored in a list.
+	
+	Since each person has four movie titles appended in from of the unique alphanumeric identifier \emph{tconst} we were able to easily append the information about each movie, compiled in Section \ref{sec:preTitle}, to each corresponding title per person.
+	
+	\subsection{Creating the database with sqlite}
+	\label{sec:CreateDatabase}
+	To be able to use the extracted information in \emph{PyDial} a database needed to be created. All of the previously collected data could now be added to a sql database, the final database had the following six columns, "id" filled with the \emph{nconst}, "name" which held the actor name in lower case letters, "birthyear", "deathyear", "professions" which held a string with 3 professions separated by a comma and "movieinfo" which was a string with the information of four titles the person worked on, also separated by a comma. An example entry for "Leonardo DiCaprio" is shown in Table \ref{tab:database}.
+	
+	Due to size limitations on part of \emph{PyDial} we again needed reduce the amount of data in our database, wo chose to only use the first 1000 entries of our database. The reason and implications of size limitation will be discussed in Section \ref{sec:limitations}.
+	
+	\begin{table}[h]
+		%		\small
+		\begin{tabular}{lp{0.65\columnwidth}}
+			\toprule[0.5mm]
+			id & nm0000138 \\[0.7mm]
+			name & leonardo dicaprio \\[0.7mm]
+			birthYear & 1974 \\[0.7mm]
+			deathYear & -1 \\[0.7mm]
+			professions & actor,producer,writer \\[0.7mm]
+			movieinfo & | the wolf of wall street : movie, 2013 (biography,comedy,crime, 180 minutes) || inception : movie, 2010 (action,adventure,sci-fi, 148 minutes) || titanic : movie, 1997 (drama,romance, 194 minutes) || the departed : movie, 2006 (crime,drama,thriller, 151 minutes |\\[0.7mm]
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Example entry for the actor "Leonardo DiCaprio" as it would appear in the database. At this stage of preprocessing every string was converted to lower case letters.}
+		\label{tab:database}
+	\end{table}
+	
+	\subsection{Unicode}
+	\label{sec:pydialUnicode}
+	As mentioned before, \emph{PyDial} only supports ASCII characters in the database, if a non-ASCII character was stored in the database \emph{PyDial} would crash. We tried two different approaches to solve this problem, the first was to try and change the way \emph{PyDial} handles the input from the database. Since the documentation for \emph{PyDial} is limited this approach was quickly abandoned since it did not yield the desired results. The second approach, which was consequently the used method, was to change every non-ASCII character to it's nearest ASCII equivalent. This meant that we needed to create a non-ASCII to ASCII mapping from scratch and consequently resulted in a total of 245 non-ASCII to ASCII conversions, some examples of theses conversions are listed in Table \ref{tab:ASCIIExamples}, the list of all conversions can be found in the provided code under \emph{IMDB-data/merger.py} from line 23 to line 309.
+	
+	\begin{table}[h]
+	\centering
+		%		\small
+		\begin{tabular}{l|l}
+			\toprule[0.5mm]
+			'À' $\rightarrow$ 'A' & 'ž' $\rightarrow$ 'z'\\[0.7mm]
+			'Á' $\rightarrow$ 'A' & 'ů' $\rightarrow$ 'u'\\[0.7mm]
+			'Œ' $\rightarrow$ 'OE' & 'ř' $\rightarrow$ 'r'\\[0.7mm]
+			'œ' $\rightarrow$oe' & 'ł' $\rightarrow$ 'l' \\[0.7mm]
+			'ž' $\rightarrow$ 'z' & 'þ' $\rightarrow$ 'th'\\[0.7mm]
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Ten examples for some of the non-ASCII to ASCII conversions implemented in the preprocessing steps.}
+		\label{tab:ASCIIExamples}
+	\end{table}
+	
+	All non-ASCII characters in the database were looked up and replaced by ASCII characters from the mapping table. The code used to convert all non-ASCII characters to ASCII characters can be found in Listing \ref{code:ASCII}.
+	
+	\begin{lstlisting}[float,caption=Converting non-ASCII characters to ASCII characters., label=code:ASCII]
+def fold_to_ascii(text):
+	if isascii(text):
+		return text
+	text = ''.join([ASCII_REPLACEMENTS.get(c, c) for c in text])
+	return unicode(unicodedata.normalize('NFKD',unicode(text)).encode('ascii', 'ignore'))
+	\end{lstlisting}
+	
+	\subsection{Importing the database}
+	To import the created database into \emph{PyDial}, we needed to pass the database to the \emph{ontologyTool.py} script. This provides an interface in which we could choose which slot types will be linked to which of the six columns in our database. The available slot types are:
+	
+	\begin{itemize}
+		\item Informable: information the user can inform the system about
+		\item System requestable: information the system can actively ask the user
+		\item Requestable: information the user can request from the system
+		\item Binary: information which is in the form of a yes/no or true/false
+	\end{itemize}
+	
+	The "birthyear", "deathyear" and "name" columns were selected to be \emph{Informable} and \emph{System requestable}, the "birthyear", "professions", "deathyear", "name" and "movieinfo" were selected to be \emph{Requestable} and no column was selected as \emph{Binary} since we do not have binary data in our database. The script then creates a \emph{.json} which holds the information which column is linked to which slot type.
+	
+\section{Additions to the code}
+\label{sec:CodeAdditions}
+When adding a new domain to \emph{PyDial} some additional code and configurations need to be added to the source code. The first addition is the configuration file \emph{IMDB.cfg} in the \emph{/config} folder, this configuration file must be provided with the execution of \emph{PyDial} and provides \emph{PyDial} with the name of the \emph{Messages.txt} file.
+
+The \emph{Messages.txt} file, in our case named \emph{IMDBMessages.txt}, provides \emph{PyDial} with a set of responses for the system. These range from simple statements like "Thank you, goodbye." and "What are you looking for" to more complex statements like "I've found \$A (*\$B). They're known for the following movies: \$E." which provides the user with the requested person, his/er birthyear and some information about the titles they worked on.
+
+The last addition needed to be implemented in the \emph{semi/RegexSemi\_IMDB.py} file which provides the system with an extensive set of regular expressions. These help the system to identify which information is requested by the user, for example the profession of a person is checked with the regular expression "(profession|work|role)" and "|(movie)|(info)|(information)|(film)" to tell the system to recall information about the titles a specific person has worked on. An example dialogue that uses all these additions can be found in Table \ref{tab:DialogueExample}.
+
+\section{Discussion}
+	\subsection{Limitations}
+	\label{sec:limitations}
+	Even though PyDial offers some sophisticated mechanics and is generally well-engineered, its most significant drawback is its poor performance. Furthermore, the documentation provided on the official PyDial website is rather sparse, making the practical use of PyDial a tedious trial-and-error task. This is the main reason we failed to simply interconnect our two databases instead of having to merge them into a single one. For the small-scoped applications PyDial is targeted at, the system even seems somewhat over-engineered and overly complicated, reducing its accessibility even further. Of course, we did not only encounter difficulties with PyDial: The \textit{IMDb} itself is not fully compatible with what we wanted to achieve with our system.
+	\subsubsection{The IMDb}
+	\label{sec:limitations-IMDb}	
+	Browsing the data in the \textit{IMDb} quickly reveals the redundancy of the huge set of titles, as Table \ref{tab:IMDb-curiosities} shows.
+Furthermore, the star ratings, which are one of the core features of the \textit{IMDb}, are not included in the title database, but in a separate file. To reduce the required amount of preprocessing, we did not merge these ratings into our database. In hindsight, we believe that the ratings could have provided a good way of assessing 'relevance' for the included titles\footnote{Of course, even some movies with low quality ratings are very well-known by broad audiences, which would induce even more fine-grained inspection of the data.}. 
+	
+\begin{table*}[t]
+		\small
+		\begin{tabular}{lllll}
+			\toprule[0.5mm]
+tconst & type & original title & start year & genres \\
+			\midrule
+tt1752318&tvEpisode&Countdown Show: 6 Health Plagues in Women Over 40&2010&Talk-Show\\[0.5mm]
+tt0660506&tvEpisode&Heiße Reifen, Scharfe Kurven&2005&Crime\\
+tt0449193&video&Big Guns&2001&Adult\\
+tt0451003&videoGame&Brothers in Arms: Road to Hill 30&2005&Action,Biography,Drama\\
+tt0451095&movie&Kolechko zolotoe, buket iz alykh roz&1994&Drama\\
+tt0451252&tvSpecial&UFC 47: It's On!&2004&Sport\\
+tt0451427&short&Moines et guerriers&1909&History,Short,War\\
+tt7285726&video&O Fresh Ft. Slim Thug: We Up to Something&2017&Music,Short\\
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Examples of irrelevant titles in the \textit{IMDb}.}
+		\label{tab:IMDb-curiosities}
+\end{table*}		
+The following peculiarities in the title dataset become ovious from Table \ref{tab:IMDb-curiosities};
+\begin{itemize}
+\item For TV shows, every single episode is listed separately.
+\item The database contains adult films, video games, sports shows, music videos, and other entries that are completely irrelevant to our task.
+\item Non-English titles are rather unlikely to be searched for by international users of our system.
+\item Due to the sheer age of some productions, many entries are potentially unknown to audiences nowadays.
+\end{itemize}
+
+On the other hand, the examples from Tables \ref{tab:title}, \ref{tab:names}, and \ref{tab:database} show another problem of the \textit{IMDb}: Only four popular movies are referenced for each celebrity's entry in the name dataset. In the shown example, \emph{The Revenant}, the movie which earned \emph{Leonardo DiCaprio} his first \emph{Oscar}, remains entirely unmentioned because of the high number of successful productions DiCaprio had previously starred in. While four movies are a feasible number for getting a quick overview of a person's previous work, we would have wished for a more complete movie index in our system due to its otherwise rather limited informational benefit. 
+
+\begin{table}[H]
+		\centering
+		\begin{tabular}{c}
+		\toprule[0.5mm]
+		"Stone" Robert A Stone III\\
+		'Carl' Nai Peng Wang\\
+		A. Chandler Warren Jr.\\
+		James P. O'Connor\\
+		Hélène Ninerois\\
+		Lajos Kathy Horváth\\
+		Miasha\\
+		\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Poorly standardized names in the \textit{IMDb}.}
+		\label{tab:IMDb-namestrings}
+\end{table}
+
+Regarding the name dataset, we identified a fundamental design flaw in the \textit{IMDb}: All names are stored as a single string (see Table \ref{tab:IMDb-namestrings}). Thus, users of our system need to precisely enter all names including abbreviations and nicknames with the exact punctuation in a single prompt, which is quite a considerable source for errors since \textit{PyDial} does not account for spelling errors. This is especially aggravated by the punctuation inconsistencies in the \textit{IMDb}, which can also be seen in Table \ref{tab:IMDb-namestrings}.    
+
+
+	\subsubsection{Storing conversational context}
+	\label{sec:pydialLimits-context}
+	The slot values for information previously entered by the user is sometimes not accessed correctly by \textit{PyDial}. In our case, the system forgot about the name, lifespan, and professions of the current person as soon as the movie info was requested by the user.
+The system then printed the slot variables instead of their values, as can be seen in Table \ref{tab:DialogueExample}.
+
+	\subsubsection{PyDial development}
+	\label{sec:pydialLimits-development}
+	It seems that the authors of \textit{PyDial} have somewhat abandoned their project in spite of a general lack of alternatives and its promising architecture. The fact that \textit{PyDial} neither supports unicode strings nor runs in Python 3 supports this observation. Some features of Python 3 even cause syntax errors when trying to run \textit{PyDial} on machines without Python 2 installed.
+	
+	\subsubsection{Database access}
+	\label{sec:pydialLimits-DB}
+	When running the built-in Ontology tool, \textit{PyDial} creates a redundant, identical copy of the provided database. Additionally, all slots are copied into a JSON \cite{JSON} file\footnote{For the informable slots, every single database entry is duplicated to the JSON file, while only the slot reference is copied for other slots.} for inexplicable reasons instead of harnessing the speed and accessibility of SQLite databases on the fly.
+	
+	We believe that this architectural peculiarity is the main factor responsible for the bad performance of \textit{PyDial}. The sample databases distributed with \textit{PyDial} are ridiculously small (1kb to 30 kb) compared to the ~1.5M entries that we originally had in the \textit{IMDb} dataset, resulting in a file size of around 700mb. Since running a dialogue on the original 700mb \textit{IMDb} dataset revealed that not even a single query could be answered within ~20 min of waiting time, further preprocessing of our database was required (See Table \ref{tab:db-versions}).	
+The next iteration resulted in a database size of ~30mb with 98312 entries, yet \textit{PyDial} response times are still high at half a minute per query. Reducing the file size this drastically was achieved excluding the following entries during data selection.:
+	\begin{itemize}
+	\item productions from before 1980
+	\item movies with a runtime less than ten minutes
+	\item actors having starred in less than two movies
+	\end{itemize}
+	
+\begin{table}[H]
+\centering
+		\small
+		\begin{tabular}{ccc}			
+			\toprule[0.5mm]
+			feature restriction & database v1 & database v2 \\[0.5mm]
+			\midrule
+			length & < 5 min & < 10 min\\[0.5mm]
+			start year & none & < 1980\\[0.5mm]
+			runtime & none & none\\[0.5mm]
+			genres & none & none\\[0.5mm]
+			\midrule
+			starred movies & none & < 2\\[0.5mm]
+
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{Entries excluded from the database (first vs. second iteration).}
+		\label{tab:db-versions}
+	\end{table}		
+	
+	\subsubsection{Expandability}
+	\label{sec:pydialLimits-expandability}
+	Despite all efforts to make \textit{PyDial} as expandable as possible, trying to add an entirely new domain revealed some architectural flaws of the system:
+\begin{itemize}
+	\item The primary key of the database always needs to be called \emph{'name'}. We don't see any necessity for this convention, since the system could simply look for the primary key independently from its identifier. This approach requires needless preprocessing of existing databases. This issue could be circumvented by simply accessing the database on the fly instead of an external JSON file.
+	\item For some reason, the creators of \textit{PyDial} designed their system entirely for ASCII text. Non-ASCII characters in any of the database's slots result in a fatal encoding error crashing the program. We encountered this problem early on in our endeavours, since many international actors and motion pictures are featured in the \textit{IMDb}. Due to the international popularity of people like \emph{'Daniel Brühl'} or \emph{'Céline Dion'}, we couldn't simply exclude all non-ASCII names from the database. Instead, we mapped unicode characters to their corresponding ASCII symbols (i.e. 'ü' to 'ue' or 'é' to e) as mentioned in \ref{sec:pydialUnicode}.
+	\item Considering the rather modular approach of \textit{PyDial}, adding all the necessary regular expressions and rules for new keywords proved to be enourmously time consuming, once more questioning the feasibility of rule-based approaches. While the system works perfectly well within the boundaries of the pre-defined questions and answers, it completely fails when encountering typographical alternatives to known words or even entirely unknown ones. 
+\end{itemize}	 
+
+\section{Conclusions}
+\label{sec:conclusion}
+
+Our attempts of including an entirely new, large-scale domain into \textit{PyDial} allow some suggestions for the future development and practical use of \textit{PyDial} and the \textit{IMDb} datasets in general.  
+
+\subsection{Working with PyDial}
+\label{sec:conclusions-pydial}
+\begin{itemize}
+\item We urgently suggest the implementation of unicode support in \textit{PyDial}. This is a rather minor change with huge effect on the amount of possible applications for \textit{PyDial}.
+\item \textit{PyDial} currently processes all slot values as lower case strings. While this makes sense for taking user input, it would look more natural if names etc. were output with their original capitalization. 
+\item Python 3 has been around for long enough to finally consider upgrading \textit{PyDial} from Python 2 to 3, benefiting from various new language features and maintaining support on newer machines.
+\item Even though the original authors had consciously made the design decision to rely on external JSON files instead of directly accessing the sqlite database, we propose trying to omit the JSON files. \textit{PyDial} greatly suffers from performance issues when ran on large databases, which we in part attribute to the indirect data access. 
+\item The documentation about \textit{PyDial} is still very sparse. In order to raise popularity and comprehensibility of the framework, proper documentation, tutorials, and a lively community forum are required.
+The lack of documentation was the main reason we had to merge our datasets instead of using the interconnected database files, which would have saved a lot of preprocessing.
+\item Even though the problem of \textit{PyDial} forgetting conversational context may have been due to errors on our end, we think that the system needs to store more information from previous user input. In a real-world conversation, speakers don't respecify affected entities in every sentence following their mention. This is an interesting prospect which was also tackled by another group in this TeamLab.  
+\item To us, the convention of having to name the primary key of a database 'name' for use with \textit{PyDial} seems entirely unnecessary and contradictory to the whole point of primary keys in sqlite databases. This restriction should be abolished for more flexibility.
+\item In our opinion, adding a new domain required too many code modifications in \textit{PyDial}. Providing external configuration files is a more pleasant and user-friendly way of modifying standard behaviours of a system. While the prompt templates can be provided with text files, regular expressions need to be constructed within the code for keyword recognition. Covering all possible case discriminations for different spellings etc. is a tedious task and a major source of errors. We suggest circumventing this problem by the implementation of a spellcheck system suggesting similarly spelled items if no entries are found for the user's input.\footnote{For example, one could use the Levenshtein distance \citep{Levenshtein} as a very simple approach for spellchecking.} 
+\end{itemize}
+\newpage
+\subsection{Using IMDb datasets}
+\label{sec:conclusions-imdb} 
+\begin{itemize}
+\item Even though it is unlikely for the \textit{IMDb} to change how entries are stored, it is important to be aware of the particularities of the dataset.
+\item The name dataset needs thorough standardization regarding punctuation, abbreviations, nicknames, and even the order of names.  
+\item It would have been convenient if the average movie ratings were saved directly in the title file. This information could save lots of preprocessing, since the ratings constitute a good indicator of relevance. 
+\item For the full set of movies per celebrity, costly cross-referencing to the \emph{title.principals.tsv} is required. The name dataset only contains 4 titles per person that are not chosen in any publicly transparent way.
+\end{itemize}
+
+With these suggestions and conclusions, we hope to facilitate the entry to working with both \textit{PyDial} and the \textit{IMDb}, fuelling more sophisticated dialogue systems and making information about the movie business more accessible.
+
+\begin{table*}[h]
+		\begin{tabular}{p{\linewidth}}
+			\toprule[0.5mm]
+			-bash-4.4\$ python pydial.py chat config/IMDB.cfg \\[0.7mm]
+			*** logfile: IMDB-seed397162272-00.0.chat.log *** \\[0.7mm]
+			*** Chatting with policies ['IMDB']: *** \\[0.7mm]
+			\textbf{Prompt >} Welcome to 'Who' sInTheBiz', the IMDb ( internet movie database) dialogue system. Ask me about actors, directors, producers, composers, etc. from the movie industry. \\[0.7mm]
+			\textbf{User >} I am looking for an actor named Leonardo DiCaprio \\[0.7mm]
+			\textbf{Prompt >} I've found a person named leonardo dicaprio. Do you want to know when they were born or died, what they worked as and what movies they are famous for? \\[0.7mm]
+			\textbf{User >} Can you tell me when he was born? \\[0.7mm]
+			\textbf{Prompt >} I've found a person named leonardo dicaprio (* 1974 ). \\[0.7mm]
+			\textbf{User >} Can you tell me what he worked as? \\[0.7mm]
+			\textbf{Prompt >} I've found the actor, producer, writer named leonardo dicaprio . \\[0.7mm]
+			\textbf{User >} Can you tell me which movies he worked on? \\[0.7mm]
+			\textbf{Prompt >} I've found the \$D named \$A. They' re known for the following movies:| the wolf of wall street : movie, 2013 (biography,comedy,crime, 180 minutes) || inception : movie, 2010 (action,adventure,sci-fi, 148 minutes) || titanic : movie, 1997 (drama,romance, 194 minutes) || the departed : movie, 2006 (crime,drama,thriller, 151 minutes) |. \\[0.7mm]
+			
+			\bottomrule[0.5mm]
+		\end{tabular}
+		\caption{An example for a dialogue using the new database.}
+		\label{tab:DialogueExample}
+	\end{table*}
+
+\section*{Notes}
+The \textit{PyDial} code for this Project is located in \url{/mount/arbeitsdaten31/studenten1/team-lab-phonetics/2018/groups/3/pydial_Project/pydial}. The \textit{IMDb} datasets and the script used to create the database are located in \url{/mount/arbeitsdaten31/studenten1/team-lab-phonetics/2018/groups/3/pydial_Project/IMDB-data}.
+
+\section*{Acknowledgements}
+Information courtesy of\\
+IMDb\\
+\url{(http://www.imdb.com)}.\\
+Used with permission.
+
+
+\clearpage
+
+\bibliographystyle{acl_natbib}
+\bibliography{Report-TeamRocket}
+
+\end{document}

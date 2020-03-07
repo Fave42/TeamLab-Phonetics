@@ -1,0 +1,46 @@
+# --------------- RULES --------------------------
+hello() : "Welcome to 'Who'sInTheBiz', the IMDb (internet movie database) dialogue system. Ask me about actors, directors, producers, composers, etc. from the movie industry.";
+hello(help): "Sorry, I cannot understand you. Please tell me again what you are looking for?";
+hello(more) : "Can I help you with anything else?";
+null() : "Sorry, you've just confused me; Please tell me again what you are looking for.";
+repeat() : "Could you please repeat that?";
+bye() : "Thank you, goodbye.";
+
+# Requests
+request(type) : "What are you looking for?";
+request(name) : "What's the name of the person you're looking for?";
+
+
+#Recommendation
+#$A: name, $B: birthyear, $C: deathyear, $D: professions, $E: movieinfo
+inform(name=none, type=person) : "We're now looking for people in the movie industry.";
+inform(name=none, name=$A) : "I've found a person named $A. Do you want to know when they were born or died, what they worked as and what movies they are famous for?";
+
+inform(name=none) : "Sorry, no person found.";
+inform(name=none, birthyear=none) : "Sorry, no person found.";
+inform(name=none, deathyear=none) : "Sorry, no person found.";
+inform(name=none, birthyear=none, deathyear=none) : "Sorry, no person found.";
+
+
+inform(name=none, name=$A, birthyear=$B, ) : "I've found a person named $A (*$B).";
+inform(name=none, name=$A, deathyear=$C) : "I've found a person named $A (✝$C).";
+inform(name=none, name=$A, birthyear=$B, deathyear=$C) : "I've found a person named $A (*$B , ✝$C).";
+
+inform(name=none, name=$A, professions=$D) : "I've found the $D named $A.";
+inform(name=none, name=$A, professions=$D, birthyear=$B) : "I've found the $D named $A (*$B).";
+inform(name=none, name=$A, professions=$D, deathyear=$C) : "I've found the $D named $A (✝$C).";
+inform(name=none, name=$A, professions=$D, birthyear=$B, deathyear=$C) : "I've found the $D named $A (*$B , ✝$C). ";
+
+inform(name=none, name=$A, movieinfo=$E) : "I've found $A. They're known for the following movies: $E.";
+inform(name=none, name=$A, birthyear=$B, movieinfo=$E) : "I've found $A (*$B). They're known for the following movies: $E.";
+inform(name=none, name=$A, deathyear=$B, movieinfo=$E) : "I've found $A (✝$C).  They're known for the following movies: $E.";
+inform(name=none, name=$A, birthyear=$B, deathyear=$C, movieinfo=$E) : "I've found $A (*$B , ✝$C). They're known for the following movies: $E.";
+
+inform(name=none, name=$A, professions=$D, movieinfo=$E) : "I've found the $D named $A. They're known for the following movies: $E.";
+inform(name=none, name=$A, professions=$D, birthyear=$B, movieinfo=$E) : "I've found the $D named $A (*$B). They're known for the following movies: $E.";
+inform(name=none, name=$A, professions=$D, deathyear=$C, movieinfo=$E) : "I've found the $D named $A (✝$C). They're known for the following movies: $E.";
+inform(name=none, name=$A, professions=$D, birthyear=$B, deathyear=$C, movieinfo=$E) : "I've found the $D named $A(*$B , ✝$C). They're known for the following movies: $E.";
+
+#Confirmation
+confirm() : "Please tell me more about the person you are looking for!";
+confirm(name=none, name=$A) : "You want to know more about the person $A, is that correct?";
