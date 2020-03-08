@@ -1,2 +1,8 @@
 *.pyc
 *.log
+
+# Exclude large IMDB Files
+IMDB-data/name.basics.tsv
+IMDB-data/title.basics.tsv
+IMDB-data/persons.tsv
+
